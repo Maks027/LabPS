@@ -1,0 +1,139 @@
+EESchema Schematic File Version 4
+EELAYER 26 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 1 1
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L Diode:SM4007 D1
+U 1 1 5E58AF1F
+P 3900 3050
+F 0 "D1" V 3854 3129 50  0000 L CNN
+F 1 "SM4007" V 3945 3129 50  0000 L CNN
+F 2 "Diode_SMD:D_MELF" H 3900 2875 50  0001 C CNN
+F 3 "http://cdn-reichelt.de/documents/datenblatt/A400/SMD1N400%23DIO.pdf" H 3900 3050 50  0001 C CNN
+	1    3900 3050
+	0    1    1    0   
+$EndComp
+$Comp
+L Diode:SM4007 D2
+U 1 1 5E58AF76
+P 4350 3050
+F 0 "D2" V 4304 3129 50  0000 L CNN
+F 1 "SM4007" V 4395 3129 50  0000 L CNN
+F 2 "Diode_SMD:D_MELF" H 4350 2875 50  0001 C CNN
+F 3 "http://cdn-reichelt.de/documents/datenblatt/A400/SMD1N400%23DIO.pdf" H 4350 3050 50  0001 C CNN
+	1    4350 3050
+	0    1    1    0   
+$EndComp
+$Comp
+L Diode:SM4007 D3
+U 1 1 5E58B012
+P 3900 3600
+F 0 "D3" V 3854 3679 50  0000 L CNN
+F 1 "SM4007" V 3945 3679 50  0000 L CNN
+F 2 "Diode_SMD:D_MELF" H 3900 3425 50  0001 C CNN
+F 3 "http://cdn-reichelt.de/documents/datenblatt/A400/SMD1N400%23DIO.pdf" H 3900 3600 50  0001 C CNN
+	1    3900 3600
+	0    1    1    0   
+$EndComp
+$Comp
+L Diode:SM4007 D4
+U 1 1 5E58B052
+P 4350 3600
+F 0 "D4" V 4304 3679 50  0000 L CNN
+F 1 "SM4007" V 4395 3679 50  0000 L CNN
+F 2 "Diode_SMD:D_MELF" H 4350 3425 50  0001 C CNN
+F 3 "http://cdn-reichelt.de/documents/datenblatt/A400/SMD1N400%23DIO.pdf" H 4350 3600 50  0001 C CNN
+	1    4350 3600
+	0    1    1    0   
+$EndComp
+$Comp
+L Connector:Screw_Terminal_01x02 J1
+U 1 1 5E58B131
+P 3300 3250
+F 0 "J1" H 3220 3467 50  0000 C CNN
+F 1 "Screw_Terminal_01x02" H 3220 3376 50  0000 C CNN
+F 2 "TerminalBlock:TerminalBlock_bornier-2_P5.08mm" H 3300 3250 50  0001 C CNN
+F 3 "~" H 3300 3250 50  0001 C CNN
+	1    3300 3250
+	-1   0    0    -1  
+$EndComp
+$Comp
+L Connector:Screw_Terminal_01x02 J2
+U 1 1 5E58B1A3
+P 5700 3250
+F 0 "J2" H 5780 3242 50  0000 L CNN
+F 1 "Screw_Terminal_01x02" H 5780 3151 50  0000 L CNN
+F 2 "TerminalBlock:TerminalBlock_bornier-2_P5.08mm" H 5700 3250 50  0001 C CNN
+F 3 "~" H 5700 3250 50  0001 C CNN
+	1    5700 3250
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:CP C1
+U 1 1 5E58B1F7
+P 4900 3300
+F 0 "C1" H 5018 3346 50  0000 L CNN
+F 1 "330uF, 16V" H 5018 3255 50  0000 L CNN
+F 2 "Capacitor_THT:CP_Radial_D6.3mm_P2.50mm" H 4938 3150 50  0001 C CNN
+F 3 "~" H 4900 3300 50  0001 C CNN
+	1    4900 3300
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3900 3200 3900 3250
+Wire Wire Line
+	4350 3200 4350 3350
+Wire Wire Line
+	3500 3250 3900 3250
+Connection ~ 3900 3250
+Wire Wire Line
+	3900 3250 3900 3450
+Wire Wire Line
+	3500 3350 4350 3350
+Connection ~ 4350 3350
+Wire Wire Line
+	4350 3350 4350 3450
+Wire Wire Line
+	3900 2900 3900 2800
+Wire Wire Line
+	3900 2800 4350 2800
+Wire Wire Line
+	4350 2900 4350 2800
+Connection ~ 4350 2800
+Wire Wire Line
+	4350 2800 4900 2800
+Wire Wire Line
+	3900 3750 3900 3800
+Wire Wire Line
+	3900 3800 4350 3800
+Wire Wire Line
+	4350 3750 4350 3800
+Connection ~ 4350 3800
+Wire Wire Line
+	4350 3800 4900 3800
+Wire Wire Line
+	4900 2800 4900 3150
+Wire Wire Line
+	4900 3450 4900 3800
+Wire Wire Line
+	5500 2800 4900 2800
+Wire Wire Line
+	5500 2800 5500 3250
+Connection ~ 4900 2800
+Wire Wire Line
+	5500 3800 4900 3800
+Wire Wire Line
+	5500 3350 5500 3800
+Connection ~ 4900 3800
+$EndSCHEMATC

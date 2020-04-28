@@ -1,0 +1,854 @@
+
+LabPS_uContr.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         00000484  00000000  00000000  00000074  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .bss          00000029  00800060  00800060  000004f8  2**0
+                  ALLOC
+  2 .debug_aranges 00000048  00000000  00000000  000004f8  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  3 .debug_pubnames 0000009e  00000000  00000000  00000540  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  4 .debug_info   00000362  00000000  00000000  000005de  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  5 .debug_abbrev 00000199  00000000  00000000  00000940  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_line   000003de  00000000  00000000  00000ad9  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_frame  00000070  00000000  00000000  00000eb8  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_str    0000019c  00000000  00000000  00000f28  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_loc    0000007c  00000000  00000000  000010c4  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_ranges 00000040  00000000  00000000  00001140  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	10 c0       	rjmp	.+32     	; 0x22 <__ctors_end>
+   2:	1f c0       	rjmp	.+62     	; 0x42 <__bad_interrupt>
+   4:	1e c0       	rjmp	.+60     	; 0x42 <__bad_interrupt>
+   6:	1d c0       	rjmp	.+58     	; 0x42 <__bad_interrupt>
+   8:	1c c0       	rjmp	.+56     	; 0x42 <__bad_interrupt>
+   a:	1b c0       	rjmp	.+54     	; 0x42 <__bad_interrupt>
+   c:	1a c0       	rjmp	.+52     	; 0x42 <__bad_interrupt>
+   e:	19 c0       	rjmp	.+50     	; 0x42 <__bad_interrupt>
+  10:	18 c0       	rjmp	.+48     	; 0x42 <__bad_interrupt>
+  12:	17 c0       	rjmp	.+46     	; 0x42 <__bad_interrupt>
+  14:	16 c0       	rjmp	.+44     	; 0x42 <__bad_interrupt>
+  16:	15 c0       	rjmp	.+42     	; 0x42 <__bad_interrupt>
+  18:	14 c0       	rjmp	.+40     	; 0x42 <__bad_interrupt>
+  1a:	13 c0       	rjmp	.+38     	; 0x42 <__bad_interrupt>
+  1c:	12 c0       	rjmp	.+36     	; 0x42 <__bad_interrupt>
+  1e:	11 c0       	rjmp	.+34     	; 0x42 <__bad_interrupt>
+  20:	10 c0       	rjmp	.+32     	; 0x42 <__bad_interrupt>
+
+00000022 <__ctors_end>:
+  22:	11 24       	eor	r1, r1
+  24:	1f be       	out	0x3f, r1	; 63
+  26:	cf e5       	ldi	r28, 0x5F	; 95
+  28:	d1 e0       	ldi	r29, 0x01	; 1
+  2a:	de bf       	out	0x3e, r29	; 62
+  2c:	cd bf       	out	0x3d, r28	; 61
+
+0000002e <__do_clear_bss>:
+  2e:	10 e0       	ldi	r17, 0x00	; 0
+  30:	a0 e6       	ldi	r26, 0x60	; 96
+  32:	b0 e0       	ldi	r27, 0x00	; 0
+  34:	01 c0       	rjmp	.+2      	; 0x38 <.do_clear_bss_start>
+
+00000036 <.do_clear_bss_loop>:
+  36:	1d 92       	st	X+, r1
+
+00000038 <.do_clear_bss_start>:
+  38:	a9 38       	cpi	r26, 0x89	; 137
+  3a:	b1 07       	cpc	r27, r17
+  3c:	e1 f7       	brne	.-8      	; 0x36 <.do_clear_bss_loop>
+  3e:	be d0       	rcall	.+380    	; 0x1bc <main>
+  40:	1f c2       	rjmp	.+1086   	; 0x480 <_exit>
+
+00000042 <__bad_interrupt>:
+  42:	de cf       	rjmp	.-68     	; 0x0 <__vectors>
+
+00000044 <readADC>:
+    }
+}
+
+
+uint16_t readADC(uint8_t input){
+	ADMUX = input;					//Write input argument to ADMUX register to select channel(only with default reference!)
+  44:	87 b9       	out	0x07, r24	; 7
+    can be achieved.
+*/
+void
+_delay_loop_1(uint8_t __count)
+{
+	__asm__ volatile (
+  46:	8a e1       	ldi	r24, 0x1A	; 26
+  48:	8a 95       	dec	r24
+  4a:	f1 f7       	brne	.-4      	; 0x48 <readADC+0x4>
+	_delay_us(10);
+	ADCSRA |= (1 << ADSC);			//Start the conversion
+  4c:	e6 e2       	ldi	r30, 0x26	; 38
+  4e:	f0 e0       	ldi	r31, 0x00	; 0
+  50:	80 81       	ld	r24, Z
+  52:	80 64       	ori	r24, 0x40	; 64
+  54:	80 83       	st	Z, r24
+	while (!(ADCSRA & (1 << ADIF)));//Wait until conversion is completed
+  56:	80 81       	ld	r24, Z
+  58:	84 ff       	sbrs	r24, 4
+  5a:	fd cf       	rjmp	.-6      	; 0x56 <readADC+0x12>
+	ADCSRA |= (1 << ADIF);			//Reset flag(by writing 1)
+  5c:	e6 e2       	ldi	r30, 0x26	; 38
+  5e:	f0 e0       	ldi	r31, 0x00	; 0
+  60:	80 81       	ld	r24, Z
+  62:	80 61       	ori	r24, 0x10	; 16
+  64:	80 83       	st	Z, r24
+	return ADCW;					//Return value
+  66:	24 b1       	in	r18, 0x04	; 4
+  68:	35 b1       	in	r19, 0x05	; 5
+}
+  6a:	82 2f       	mov	r24, r18
+  6c:	93 2f       	mov	r25, r19
+  6e:	08 95       	ret
+
+00000070 <sysInit>:
+uint16_t readADC(uint8_t input);
+void setFanPwm(int16_t pwmVal);
+void filter(fiterVariables *fVar);
+uint16_t scaleVfb(uint16_t val);
+
+void sysInit(void){
+  70:	cf 92       	push	r12
+  72:	df 92       	push	r13
+  74:	ef 92       	push	r14
+  76:	ff 92       	push	r15
+  78:	0f 93       	push	r16
+  7a:	1f 93       	push	r17
+	
+	DDRA |= (1 << DDA2) | (1 << DDA3) | (1 << DDA7);
+  7c:	ea e3       	ldi	r30, 0x3A	; 58
+  7e:	f0 e0       	ldi	r31, 0x00	; 0
+  80:	80 81       	ld	r24, Z
+  82:	8c 68       	ori	r24, 0x8C	; 140
+  84:	80 83       	st	Z, r24
+	
+	TCCR0A = 0;
+  86:	e0 e5       	ldi	r30, 0x50	; 80
+  88:	f0 e0       	ldi	r31, 0x00	; 0
+  8a:	10 82       	st	Z, r1
+	TCCR0A |= (1 << WGM01) | (1 << WGM00); // Fast PWM mode
+  8c:	80 81       	ld	r24, Z
+  8e:	83 60       	ori	r24, 0x03	; 3
+  90:	80 83       	st	Z, r24
+	TCCR0A |= (1 << COM0B1) ; // Non-inverting mode (clear OC0B on compare match)
+  92:	80 81       	ld	r24, Z
+  94:	80 62       	ori	r24, 0x20	; 32
+  96:	80 83       	st	Z, r24
+	TCCR0B = 0;
+  98:	e3 e5       	ldi	r30, 0x53	; 83
+  9a:	f0 e0       	ldi	r31, 0x00	; 0
+  9c:	10 82       	st	Z, r1
+//	TCCR0B |= (1 << CS01) | (1 << CS00); // Division by 64; 8MHz / 64 / 256 = 500Hz(PWM frequency)
+	TCCR0B |= (1 << CS00);
+  9e:	80 81       	ld	r24, Z
+  a0:	81 60       	ori	r24, 0x01	; 1
+  a2:	80 83       	st	Z, r24
+	ADCSRA |= (1 << ADEN);	//Enable ADC
+  a4:	e6 e2       	ldi	r30, 0x26	; 38
+  a6:	f0 e0       	ldi	r31, 0x00	; 0
+  a8:	80 81       	ld	r24, Z
+  aa:	80 68       	ori	r24, 0x80	; 128
+  ac:	80 83       	st	Z, r24
+//	ADCSRA |= (1 << ADIE);	//Enable ADC interrupt
+	ADCSRA |= (1 << ADPS2) | (1 << ADPS1); // ADC prescaler 64 (125kHz)
+  ae:	80 81       	ld	r24, Z
+  b0:	86 60       	ori	r24, 0x06	; 6
+  b2:	80 83       	st	Z, r24
+	
+//	ADCSRA |= (1 << ADSC);	//Start first conversion
+	
+	//Initialize Kalman filter for feedBack voltage ADC readings
+	vfbADC.N = 10;
+  b4:	0b e7       	ldi	r16, 0x7B	; 123
+  b6:	10 e0       	ldi	r17, 0x00	; 0
+  b8:	0f 2e       	mov	r0, r31
+  ba:	fa e0       	ldi	r31, 0x0A	; 10
+  bc:	cf 2e       	mov	r12, r31
+  be:	dd 24       	eor	r13, r13
+  c0:	f0 2d       	mov	r31, r0
+  c2:	f8 01       	movw	r30, r16
+  c4:	c1 92       	st	Z+, r12
+  c6:	d1 92       	st	Z+, r13
+	vfbADC.k = 1;
+  c8:	ee 24       	eor	r14, r14
+  ca:	ff 24       	eor	r15, r15
+  cc:	e3 94       	inc	r14
+  ce:	f1 82       	std	Z+1, r15	; 0x01
+  d0:	e0 82       	st	Z, r14
+	vfbADC.readVal = readADC(VFB_ADC_CH);
+  d2:	80 e0       	ldi	r24, 0x00	; 0
+  d4:	b7 df       	rcall	.-146    	; 0x44 <readADC>
+  d6:	f8 01       	movw	r30, r16
+  d8:	92 93       	st	-Z, r25
+  da:	82 93       	st	-Z, r24
+	vfbADC.avg = vfbADC.readVal;
+  dc:	91 87       	std	Z+9, r25	; 0x09
+  de:	80 87       	std	Z+8, r24	; 0x08
+	vfbADC.lastVal = vfbADC.readVal; 
+  e0:	95 87       	std	Z+13, r25	; 0x0d
+  e2:	84 87       	std	Z+12, r24	; 0x0c
+	
+	//Initialize Kalman filter for temperature ADC readings
+	tempADC.N = 10;
+  e4:	03 e6       	ldi	r16, 0x63	; 99
+  e6:	10 e0       	ldi	r17, 0x00	; 0
+  e8:	f8 01       	movw	r30, r16
+  ea:	c1 92       	st	Z+, r12
+  ec:	d1 92       	st	Z+, r13
+	tempADC.k = 1;
+  ee:	f1 82       	std	Z+1, r15	; 0x01
+  f0:	e0 82       	st	Z, r14
+	tempADC.readVal = readADC(TEMP_ADC_CH);
+  f2:	81 e0       	ldi	r24, 0x01	; 1
+  f4:	a7 df       	rcall	.-178    	; 0x44 <readADC>
+  f6:	f8 01       	movw	r30, r16
+  f8:	92 93       	st	-Z, r25
+  fa:	82 93       	st	-Z, r24
+	tempADC.avg = tempADC.readVal;
+  fc:	91 87       	std	Z+9, r25	; 0x09
+  fe:	80 87       	std	Z+8, r24	; 0x08
+	tempADC.lastVal = tempADC.readVal;
+ 100:	95 87       	std	Z+13, r25	; 0x0d
+ 102:	84 87       	std	Z+12, r24	; 0x0c
+	tempADC.sum = tempADC.readVal;
+ 104:	97 83       	std	Z+7, r25	; 0x07
+ 106:	86 83       	std	Z+6, r24	; 0x06
+	
+	SWITCH_TO_I();
+ 108:	eb e3       	ldi	r30, 0x3B	; 59
+ 10a:	f0 e0       	ldi	r31, 0x00	; 0
+ 10c:	80 81       	ld	r24, Z
+ 10e:	83 7f       	andi	r24, 0xF3	; 243
+ 110:	80 83       	st	Z, r24
+	
+}
+ 112:	1f 91       	pop	r17
+ 114:	0f 91       	pop	r16
+ 116:	ff 90       	pop	r15
+ 118:	ef 90       	pop	r14
+ 11a:	df 90       	pop	r13
+ 11c:	cf 90       	pop	r12
+ 11e:	08 95       	ret
+
+00000120 <setFanPwm>:
+	return ADCW;					//Return value
+}
+
+
+void setFanPwm(int16_t pwmVal){
+	if (pwmVal >= UINT8_MAX){
+ 120:	8f 3f       	cpi	r24, 0xFF	; 255
+ 122:	91 05       	cpc	r25, r1
+ 124:	18 f0       	brcs	.+6      	; 0x12c <setFanPwm+0xc>
+ 126:	8f ef       	ldi	r24, 0xFF	; 255
+ 128:	90 e0       	ldi	r25, 0x00	; 0
+ 12a:	04 c0       	rjmp	.+8      	; 0x134 <setFanPwm+0x14>
+ 12c:	99 23       	and	r25, r25
+ 12e:	14 f4       	brge	.+4      	; 0x134 <setFanPwm+0x14>
+ 130:	80 e0       	ldi	r24, 0x00	; 0
+ 132:	90 e0       	ldi	r25, 0x00	; 0
+	}
+	else if (pwmVal <= 0){
+		pwmVal = 0;
+	}
+	
+	OCR0B = pwmVal;
+ 134:	8c bf       	out	0x3c, r24	; 60
+}
+ 136:	08 95       	ret
+
+00000138 <scaleVfb>:
+
+uint16_t scaleVfb(uint16_t val){
+ 138:	a0 e0       	ldi	r26, 0x00	; 0
+ 13a:	b0 e0       	ldi	r27, 0x00	; 0
+ 13c:	bc 01       	movw	r22, r24
+ 13e:	cd 01       	movw	r24, r26
+ 140:	26 e2       	ldi	r18, 0x26	; 38
+ 142:	32 e0       	ldi	r19, 0x02	; 2
+ 144:	40 e0       	ldi	r20, 0x00	; 0
+ 146:	50 e0       	ldi	r21, 0x00	; 0
+ 148:	31 d1       	rcall	.+610    	; 0x3ac <__mulsi3>
+ 14a:	2f ef       	ldi	r18, 0xFF	; 255
+ 14c:	33 e0       	ldi	r19, 0x03	; 3
+ 14e:	40 e0       	ldi	r20, 0x00	; 0
+ 150:	50 e0       	ldi	r21, 0x00	; 0
+ 152:	59 d1       	rcall	.+690    	; 0x406 <__udivmodsi4>
+ 154:	82 2f       	mov	r24, r18
+ 156:	93 2f       	mov	r25, r19
+	return (uint16_t)((uint32_t)val * 550 / 1023);
+}
+ 158:	08 95       	ret
+
+0000015a <filter>:
+
+void filter(fiterVariables *fVar){
+ 15a:	0f 93       	push	r16
+ 15c:	1f 93       	push	r17
+ 15e:	fc 01       	movw	r30, r24
+	
+	fVar->sum = fVar->lastVal * fVar->k + fVar->avg * (fVar->N - fVar->k) + fVar->rm;
+ 160:	a4 81       	ldd	r26, Z+4	; 0x04
+ 162:	b5 81       	ldd	r27, Z+5	; 0x05
+ 164:	64 85       	ldd	r22, Z+12	; 0x0c
+ 166:	75 85       	ldd	r23, Z+13	; 0x0d
+ 168:	cd 01       	movw	r24, r26
+ 16a:	0e d1       	rcall	.+540    	; 0x388 <__mulhi3>
+ 16c:	22 85       	ldd	r18, Z+10	; 0x0a
+ 16e:	33 85       	ldd	r19, Z+11	; 0x0b
+ 170:	28 0f       	add	r18, r24
+ 172:	39 1f       	adc	r19, r25
+ 174:	02 81       	ldd	r16, Z+2	; 0x02
+ 176:	13 81       	ldd	r17, Z+3	; 0x03
+ 178:	60 85       	ldd	r22, Z+8	; 0x08
+ 17a:	71 85       	ldd	r23, Z+9	; 0x09
+ 17c:	c8 01       	movw	r24, r16
+ 17e:	8a 1b       	sub	r24, r26
+ 180:	9b 0b       	sbc	r25, r27
+ 182:	02 d1       	rcall	.+516    	; 0x388 <__mulhi3>
+ 184:	28 0f       	add	r18, r24
+ 186:	39 1f       	adc	r19, r25
+ 188:	37 83       	std	Z+7, r19	; 0x07
+ 18a:	26 83       	std	Z+6, r18	; 0x06
+	
+	fVar->avg = fVar->sum / fVar->N;
+ 18c:	c9 01       	movw	r24, r18
+ 18e:	b8 01       	movw	r22, r16
+ 190:	26 d1       	rcall	.+588    	; 0x3de <__udivmodhi4>
+ 192:	86 2f       	mov	r24, r22
+ 194:	97 2f       	mov	r25, r23
+ 196:	60 87       	std	Z+8, r22	; 0x08
+ 198:	71 87       	std	Z+9, r23	; 0x09
+	fVar->rm = fVar->sum - fVar->avg * fVar->N;
+ 19a:	b8 01       	movw	r22, r16
+ 19c:	f5 d0       	rcall	.+490    	; 0x388 <__mulhi3>
+ 19e:	28 1b       	sub	r18, r24
+ 1a0:	39 0b       	sbc	r19, r25
+ 1a2:	33 87       	std	Z+11, r19	; 0x0b
+ 1a4:	22 87       	std	Z+10, r18	; 0x0a
+	
+
+	fVar->lastVal = fVar->readVal;
+ 1a6:	80 81       	ld	r24, Z
+ 1a8:	91 81       	ldd	r25, Z+1	; 0x01
+ 1aa:	95 87       	std	Z+13, r25	; 0x0d
+ 1ac:	84 87       	std	Z+12, r24	; 0x0c
+	
+	fVar->out =  fVar->avg;
+ 1ae:	80 85       	ldd	r24, Z+8	; 0x08
+ 1b0:	91 85       	ldd	r25, Z+9	; 0x09
+ 1b2:	97 87       	std	Z+15, r25	; 0x0f
+ 1b4:	86 87       	std	Z+14, r24	; 0x0e
+}
+ 1b6:	1f 91       	pop	r17
+ 1b8:	0f 91       	pop	r16
+ 1ba:	08 95       	ret
+
+000001bc <main>:
+
+uint16_t Vfb, Temp;
+int32_t fanSpeed;
+steps currentStep = firstStep;
+
+int main(void){
+ 1bc:	2f 92       	push	r2
+ 1be:	3f 92       	push	r3
+ 1c0:	4f 92       	push	r4
+ 1c2:	5f 92       	push	r5
+ 1c4:	6f 92       	push	r6
+ 1c6:	7f 92       	push	r7
+ 1c8:	8f 92       	push	r8
+ 1ca:	9f 92       	push	r9
+ 1cc:	af 92       	push	r10
+ 1ce:	bf 92       	push	r11
+ 1d0:	cf 92       	push	r12
+ 1d2:	df 92       	push	r13
+ 1d4:	ef 92       	push	r14
+ 1d6:	ff 92       	push	r15
+ 1d8:	0f 93       	push	r16
+ 1da:	1f 93       	push	r17
+ 1dc:	cf 93       	push	r28
+ 1de:	df 93       	push	r29
+    sysInit();
+ 1e0:	47 df       	rcall	.-370    	; 0x70 <sysInit>
+	
+    while (1) {
+		
+		
+		vfbADC.readVal = readADC(VFB_ADC_CH);
+ 1e2:	0f 2e       	mov	r0, r31
+ 1e4:	f9 e7       	ldi	r31, 0x79	; 121
+ 1e6:	ef 2e       	mov	r14, r31
+ 1e8:	f0 e0       	ldi	r31, 0x00	; 0
+ 1ea:	ff 2e       	mov	r15, r31
+ 1ec:	f0 2d       	mov	r31, r0
+		filter(&vfbADC);
+		Vfb = scaleVfb(vfbADC.out);
+ 1ee:	0f 2e       	mov	r0, r31
+ 1f0:	fe e0       	ldi	r31, 0x0E	; 14
+ 1f2:	6f 2e       	mov	r6, r31
+ 1f4:	77 24       	eor	r7, r7
+ 1f6:	f0 2d       	mov	r31, r0
+ 1f8:	6e 0c       	add	r6, r14
+ 1fa:	7f 1c       	adc	r7, r15
+				if (Vfb > II_STEP_LIMIT){
+					SWITCH_TO_III();
+					currentStep = thirdStep;
+				}
+				else if(Vfb <= (I_STEP_LIMIT - HYST)) {
+					SWITCH_TO_I();
+ 1fc:	cb e3       	ldi	r28, 0x3B	; 59
+ 1fe:	d0 e0       	ldi	r29, 0x00	; 0
+			
+			case secondStep:{
+				
+				if (Vfb > II_STEP_LIMIT){
+					SWITCH_TO_III();
+					currentStep = thirdStep;
+ 200:	cc 24       	eor	r12, r12
+ 202:	68 94       	set
+ 204:	c1 f8       	bld	r12, 1
+			
+			case firstStep:{
+				if (Vfb > I_STEP_LIMIT){
+					if (Vfb <= II_STEP_LIMIT){
+						SWITCH_TO_II();
+						currentStep = secondStep;
+ 206:	dd 24       	eor	r13, r13
+ 208:	d3 94       	inc	r13
+			}
+			default:break;
+		}
+		
+	
+		tempADC.readVal = readADC(TEMP_ADC_CH);
+ 20a:	01 e6       	ldi	r16, 0x61	; 97
+ 20c:	10 e0       	ldi	r17, 0x00	; 0
+		filter(&tempADC);
+		if (tempADC.out < TEMP_MIN){
+ 20e:	0f 2e       	mov	r0, r31
+ 210:	fe e0       	ldi	r31, 0x0E	; 14
+ 212:	8f 2e       	mov	r8, r31
+ 214:	99 24       	eor	r9, r9
+ 216:	f0 2d       	mov	r31, r0
+ 218:	80 0e       	add	r8, r16
+ 21a:	91 1e       	adc	r9, r17
+			if (tempADC.out > TEMP_MAX){
+				fanSpeed = (((int32_t)tempADC.out - TEMP_MIN) * (FAN_PWM_MAX - FAN_PWM_MIN) / (TEMP_MAX - TEMP_MIN) + FAN_PWM_MIN);
+			}
+			else{
+				fanSpeed = FAN_PWM_MAX;
+ 21c:	0f 2e       	mov	r0, r31
+ 21e:	ff ef       	ldi	r31, 0xFF	; 255
+ 220:	2f 2e       	mov	r2, r31
+ 222:	f0 e0       	ldi	r31, 0x00	; 0
+ 224:	3f 2e       	mov	r3, r31
+ 226:	f0 e0       	ldi	r31, 0x00	; 0
+ 228:	4f 2e       	mov	r4, r31
+ 22a:	f0 e0       	ldi	r31, 0x00	; 0
+ 22c:	5f 2e       	mov	r5, r31
+ 22e:	f0 2d       	mov	r31, r0
+		}
+		else{
+			fanSpeed = 0;
+			PORTA &= ~(1 << FAN_OUT);
+		}
+		setFanPwm(fanSpeed);
+ 230:	0f 2e       	mov	r0, r31
+ 232:	f3 e7       	ldi	r31, 0x73	; 115
+ 234:	af 2e       	mov	r10, r31
+ 236:	f0 e0       	ldi	r31, 0x00	; 0
+ 238:	bf 2e       	mov	r11, r31
+ 23a:	f0 2d       	mov	r31, r0
+    sysInit();
+	
+    while (1) {
+		
+		
+		vfbADC.readVal = readADC(VFB_ADC_CH);
+ 23c:	80 e0       	ldi	r24, 0x00	; 0
+ 23e:	02 df       	rcall	.-508    	; 0x44 <readADC>
+ 240:	f7 01       	movw	r30, r14
+ 242:	91 83       	std	Z+1, r25	; 0x01
+ 244:	80 83       	st	Z, r24
+		filter(&vfbADC);
+ 246:	c7 01       	movw	r24, r14
+ 248:	88 df       	rcall	.-240    	; 0x15a <filter>
+		Vfb = scaleVfb(vfbADC.out);
+ 24a:	f3 01       	movw	r30, r6
+ 24c:	80 81       	ld	r24, Z
+ 24e:	91 81       	ldd	r25, Z+1	; 0x01
+ 250:	73 df       	rcall	.-282    	; 0x138 <scaleVfb>
+ 252:	90 93 78 00 	sts	0x0078, r25
+ 256:	80 93 77 00 	sts	0x0077, r24
+
+		Vfb = scaleVfb(readADC(VFB_ADC_CH));
+ 25a:	80 e0       	ldi	r24, 0x00	; 0
+ 25c:	f3 de       	rcall	.-538    	; 0x44 <readADC>
+ 25e:	6c df       	rcall	.-296    	; 0x138 <scaleVfb>
+ 260:	90 93 78 00 	sts	0x0078, r25
+ 264:	80 93 77 00 	sts	0x0077, r24
+
+		switch (currentStep){
+ 268:	20 91 60 00 	lds	r18, 0x0060
+ 26c:	21 30       	cpi	r18, 0x01	; 1
+ 26e:	d9 f0       	breq	.+54     	; 0x2a6 <main+0xea>
+ 270:	21 30       	cpi	r18, 0x01	; 1
+ 272:	20 f0       	brcs	.+8      	; 0x27c <main+0xc0>
+ 274:	22 30       	cpi	r18, 0x02	; 2
+ 276:	09 f0       	breq	.+2      	; 0x27a <main+0xbe>
+ 278:	3f c0       	rjmp	.+126    	; 0x2f8 <main+0x13c>
+ 27a:	27 c0       	rjmp	.+78     	; 0x2ca <main+0x10e>
+			
+			case firstStep:{
+				if (Vfb > I_STEP_LIMIT){
+ 27c:	89 37       	cpi	r24, 0x79	; 121
+ 27e:	91 05       	cpc	r25, r1
+ 280:	d8 f1       	brcs	.+118    	; 0x2f8 <main+0x13c>
+					if (Vfb <= II_STEP_LIMIT){
+ 282:	8b 3f       	cpi	r24, 0xFB	; 251
+ 284:	91 05       	cpc	r25, r1
+ 286:	48 f4       	brcc	.+18     	; 0x29a <main+0xde>
+						SWITCH_TO_II();
+ 288:	88 81       	ld	r24, Y
+ 28a:	84 60       	ori	r24, 0x04	; 4
+ 28c:	88 83       	st	Y, r24
+ 28e:	88 81       	ld	r24, Y
+ 290:	87 7f       	andi	r24, 0xF7	; 247
+ 292:	88 83       	st	Y, r24
+						currentStep = secondStep;
+ 294:	d0 92 60 00 	sts	0x0060, r13
+ 298:	2f c0       	rjmp	.+94     	; 0x2f8 <main+0x13c>
+					}
+					else if (Vfb > II_STEP_LIMIT){
+						SWITCH_TO_III();
+ 29a:	88 81       	ld	r24, Y
+ 29c:	8c 60       	ori	r24, 0x0C	; 12
+ 29e:	88 83       	st	Y, r24
+						currentStep = thirdStep;
+ 2a0:	c0 92 60 00 	sts	0x0060, r12
+ 2a4:	29 c0       	rjmp	.+82     	; 0x2f8 <main+0x13c>
+				break;
+			}
+			
+			case secondStep:{
+				
+				if (Vfb > II_STEP_LIMIT){
+ 2a6:	8b 3f       	cpi	r24, 0xFB	; 251
+ 2a8:	91 05       	cpc	r25, r1
+ 2aa:	30 f0       	brcs	.+12     	; 0x2b8 <main+0xfc>
+					SWITCH_TO_III();
+ 2ac:	88 81       	ld	r24, Y
+ 2ae:	8c 60       	ori	r24, 0x0C	; 12
+ 2b0:	88 83       	st	Y, r24
+					currentStep = thirdStep;
+ 2b2:	c0 92 60 00 	sts	0x0060, r12
+ 2b6:	20 c0       	rjmp	.+64     	; 0x2f8 <main+0x13c>
+				}
+				else if(Vfb <= (I_STEP_LIMIT - HYST)) {
+ 2b8:	8f 36       	cpi	r24, 0x6F	; 111
+ 2ba:	91 05       	cpc	r25, r1
+ 2bc:	e8 f4       	brcc	.+58     	; 0x2f8 <main+0x13c>
+					SWITCH_TO_I();
+ 2be:	88 81       	ld	r24, Y
+ 2c0:	83 7f       	andi	r24, 0xF3	; 243
+ 2c2:	88 83       	st	Y, r24
+					currentStep = firstStep;
+ 2c4:	10 92 60 00 	sts	0x0060, r1
+ 2c8:	17 c0       	rjmp	.+46     	; 0x2f8 <main+0x13c>
+				break;
+			}
+		
+			case thirdStep:{
+				
+				if (Vfb <= (II_STEP_LIMIT - HYST)){
+ 2ca:	81 3f       	cpi	r24, 0xF1	; 241
+ 2cc:	91 05       	cpc	r25, r1
+ 2ce:	a0 f4       	brcc	.+40     	; 0x2f8 <main+0x13c>
+					if (Vfb > I_STEP_LIMIT){
+ 2d0:	89 37       	cpi	r24, 0x79	; 121
+ 2d2:	91 05       	cpc	r25, r1
+ 2d4:	48 f0       	brcs	.+18     	; 0x2e8 <main+0x12c>
+						SWITCH_TO_II();
+ 2d6:	88 81       	ld	r24, Y
+ 2d8:	84 60       	ori	r24, 0x04	; 4
+ 2da:	88 83       	st	Y, r24
+ 2dc:	88 81       	ld	r24, Y
+ 2de:	87 7f       	andi	r24, 0xF7	; 247
+ 2e0:	88 83       	st	Y, r24
+						currentStep = secondStep;
+ 2e2:	d0 92 60 00 	sts	0x0060, r13
+ 2e6:	08 c0       	rjmp	.+16     	; 0x2f8 <main+0x13c>
+					}
+					else if (Vfb <= (I_STEP_LIMIT - HYST)){
+ 2e8:	8f 36       	cpi	r24, 0x6F	; 111
+ 2ea:	91 05       	cpc	r25, r1
+ 2ec:	28 f4       	brcc	.+10     	; 0x2f8 <main+0x13c>
+						SWITCH_TO_I();
+ 2ee:	88 81       	ld	r24, Y
+ 2f0:	83 7f       	andi	r24, 0xF3	; 243
+ 2f2:	88 83       	st	Y, r24
+						currentStep = firstStep;
+ 2f4:	10 92 60 00 	sts	0x0060, r1
+			}
+			default:break;
+		}
+		
+	
+		tempADC.readVal = readADC(TEMP_ADC_CH);
+ 2f8:	8d 2d       	mov	r24, r13
+ 2fa:	a4 de       	rcall	.-696    	; 0x44 <readADC>
+ 2fc:	f8 01       	movw	r30, r16
+ 2fe:	91 83       	std	Z+1, r25	; 0x01
+ 300:	80 83       	st	Z, r24
+		filter(&tempADC);
+ 302:	c8 01       	movw	r24, r16
+ 304:	2a df       	rcall	.-428    	; 0x15a <filter>
+		if (tempADC.out < TEMP_MIN){
+ 306:	f4 01       	movw	r30, r8
+ 308:	60 81       	ld	r22, Z
+ 30a:	71 81       	ldd	r23, Z+1	; 0x01
+ 30c:	f1 e0       	ldi	r31, 0x01	; 1
+ 30e:	6a 3e       	cpi	r22, 0xEA	; 234
+ 310:	7f 07       	cpc	r23, r31
+ 312:	50 f5       	brcc	.+84     	; 0x368 <main+0x1ac>
+			if (tempADC.out > TEMP_MAX){
+ 314:	81 e0       	ldi	r24, 0x01	; 1
+ 316:	67 38       	cpi	r22, 0x87	; 135
+ 318:	78 07       	cpc	r23, r24
+ 31a:	e8 f0       	brcs	.+58     	; 0x356 <main+0x19a>
+				fanSpeed = (((int32_t)tempADC.out - TEMP_MIN) * (FAN_PWM_MAX - FAN_PWM_MIN) / (TEMP_MAX - TEMP_MIN) + FAN_PWM_MIN);
+ 31c:	80 e0       	ldi	r24, 0x00	; 0
+ 31e:	90 e0       	ldi	r25, 0x00	; 0
+ 320:	20 ef       	ldi	r18, 0xF0	; 240
+ 322:	30 e0       	ldi	r19, 0x00	; 0
+ 324:	40 e0       	ldi	r20, 0x00	; 0
+ 326:	50 e0       	ldi	r21, 0x00	; 0
+ 328:	41 d0       	rcall	.+130    	; 0x3ac <__mulsi3>
+ 32a:	60 56       	subi	r22, 0x60	; 96
+ 32c:	7b 4c       	sbci	r23, 0xCB	; 203
+ 32e:	81 40       	sbci	r24, 0x01	; 1
+ 330:	90 40       	sbci	r25, 0x00	; 0
+ 332:	2c e9       	ldi	r18, 0x9C	; 156
+ 334:	3f ef       	ldi	r19, 0xFF	; 255
+ 336:	4f ef       	ldi	r20, 0xFF	; 255
+ 338:	5f ef       	ldi	r21, 0xFF	; 255
+ 33a:	87 d0       	rcall	.+270    	; 0x44a <__divmodsi4>
+ 33c:	21 5f       	subi	r18, 0xF1	; 241
+ 33e:	3f 4f       	sbci	r19, 0xFF	; 255
+ 340:	4f 4f       	sbci	r20, 0xFF	; 255
+ 342:	5f 4f       	sbci	r21, 0xFF	; 255
+ 344:	20 93 73 00 	sts	0x0073, r18
+ 348:	30 93 74 00 	sts	0x0074, r19
+ 34c:	40 93 75 00 	sts	0x0075, r20
+ 350:	50 93 76 00 	sts	0x0076, r21
+ 354:	14 c0       	rjmp	.+40     	; 0x37e <main+0x1c2>
+			}
+			else{
+				fanSpeed = FAN_PWM_MAX;
+ 356:	20 92 73 00 	sts	0x0073, r2
+ 35a:	30 92 74 00 	sts	0x0074, r3
+ 35e:	40 92 75 00 	sts	0x0075, r4
+ 362:	50 92 76 00 	sts	0x0076, r5
+ 366:	0b c0       	rjmp	.+22     	; 0x37e <main+0x1c2>
+			}
+			
+		}
+		else{
+			fanSpeed = 0;
+ 368:	10 92 73 00 	sts	0x0073, r1
+ 36c:	10 92 74 00 	sts	0x0074, r1
+ 370:	10 92 75 00 	sts	0x0075, r1
+ 374:	10 92 76 00 	sts	0x0076, r1
+			PORTA &= ~(1 << FAN_OUT);
+ 378:	88 81       	ld	r24, Y
+ 37a:	8f 77       	andi	r24, 0x7F	; 127
+ 37c:	88 83       	st	Y, r24
+		}
+		setFanPwm(fanSpeed);
+ 37e:	f5 01       	movw	r30, r10
+ 380:	80 81       	ld	r24, Z
+ 382:	91 81       	ldd	r25, Z+1	; 0x01
+ 384:	cd de       	rcall	.-614    	; 0x120 <setFanPwm>
+ 386:	5a cf       	rjmp	.-332    	; 0x23c <main+0x80>
+
+00000388 <__mulhi3>:
+ 388:	55 27       	eor	r21, r21
+ 38a:	00 24       	eor	r0, r0
+
+0000038c <__mulhi3_loop>:
+ 38c:	80 ff       	sbrs	r24, 0
+ 38e:	02 c0       	rjmp	.+4      	; 0x394 <__mulhi3_skip1>
+ 390:	06 0e       	add	r0, r22
+ 392:	57 1f       	adc	r21, r23
+
+00000394 <__mulhi3_skip1>:
+ 394:	66 0f       	add	r22, r22
+ 396:	77 1f       	adc	r23, r23
+ 398:	61 15       	cp	r22, r1
+ 39a:	71 05       	cpc	r23, r1
+ 39c:	21 f0       	breq	.+8      	; 0x3a6 <__mulhi3_exit>
+ 39e:	96 95       	lsr	r25
+ 3a0:	87 95       	ror	r24
+ 3a2:	00 97       	sbiw	r24, 0x00	; 0
+ 3a4:	99 f7       	brne	.-26     	; 0x38c <__mulhi3_loop>
+
+000003a6 <__mulhi3_exit>:
+ 3a6:	95 2f       	mov	r25, r21
+ 3a8:	80 2d       	mov	r24, r0
+ 3aa:	08 95       	ret
+
+000003ac <__mulsi3>:
+ 3ac:	ff 27       	eor	r31, r31
+ 3ae:	ee 27       	eor	r30, r30
+ 3b0:	bb 27       	eor	r27, r27
+ 3b2:	aa 27       	eor	r26, r26
+
+000003b4 <__mulsi3_loop>:
+ 3b4:	60 ff       	sbrs	r22, 0
+ 3b6:	04 c0       	rjmp	.+8      	; 0x3c0 <__mulsi3_skip1>
+ 3b8:	a2 0f       	add	r26, r18
+ 3ba:	b3 1f       	adc	r27, r19
+ 3bc:	e4 1f       	adc	r30, r20
+ 3be:	f5 1f       	adc	r31, r21
+
+000003c0 <__mulsi3_skip1>:
+ 3c0:	22 0f       	add	r18, r18
+ 3c2:	33 1f       	adc	r19, r19
+ 3c4:	44 1f       	adc	r20, r20
+ 3c6:	55 1f       	adc	r21, r21
+ 3c8:	96 95       	lsr	r25
+ 3ca:	87 95       	ror	r24
+ 3cc:	77 95       	ror	r23
+ 3ce:	67 95       	ror	r22
+ 3d0:	89 f7       	brne	.-30     	; 0x3b4 <__mulsi3_loop>
+ 3d2:	00 97       	sbiw	r24, 0x00	; 0
+ 3d4:	76 07       	cpc	r23, r22
+ 3d6:	71 f7       	brne	.-36     	; 0x3b4 <__mulsi3_loop>
+
+000003d8 <__mulsi3_exit>:
+ 3d8:	cf 01       	movw	r24, r30
+ 3da:	bd 01       	movw	r22, r26
+ 3dc:	08 95       	ret
+
+000003de <__udivmodhi4>:
+ 3de:	aa 1b       	sub	r26, r26
+ 3e0:	bb 1b       	sub	r27, r27
+ 3e2:	51 e1       	ldi	r21, 0x11	; 17
+ 3e4:	07 c0       	rjmp	.+14     	; 0x3f4 <__udivmodhi4_ep>
+
+000003e6 <__udivmodhi4_loop>:
+ 3e6:	aa 1f       	adc	r26, r26
+ 3e8:	bb 1f       	adc	r27, r27
+ 3ea:	a6 17       	cp	r26, r22
+ 3ec:	b7 07       	cpc	r27, r23
+ 3ee:	10 f0       	brcs	.+4      	; 0x3f4 <__udivmodhi4_ep>
+ 3f0:	a6 1b       	sub	r26, r22
+ 3f2:	b7 0b       	sbc	r27, r23
+
+000003f4 <__udivmodhi4_ep>:
+ 3f4:	88 1f       	adc	r24, r24
+ 3f6:	99 1f       	adc	r25, r25
+ 3f8:	5a 95       	dec	r21
+ 3fa:	a9 f7       	brne	.-22     	; 0x3e6 <__udivmodhi4_loop>
+ 3fc:	80 95       	com	r24
+ 3fe:	90 95       	com	r25
+ 400:	bc 01       	movw	r22, r24
+ 402:	cd 01       	movw	r24, r26
+ 404:	08 95       	ret
+
+00000406 <__udivmodsi4>:
+ 406:	a1 e2       	ldi	r26, 0x21	; 33
+ 408:	1a 2e       	mov	r1, r26
+ 40a:	aa 1b       	sub	r26, r26
+ 40c:	bb 1b       	sub	r27, r27
+ 40e:	fd 01       	movw	r30, r26
+ 410:	0d c0       	rjmp	.+26     	; 0x42c <__udivmodsi4_ep>
+
+00000412 <__udivmodsi4_loop>:
+ 412:	aa 1f       	adc	r26, r26
+ 414:	bb 1f       	adc	r27, r27
+ 416:	ee 1f       	adc	r30, r30
+ 418:	ff 1f       	adc	r31, r31
+ 41a:	a2 17       	cp	r26, r18
+ 41c:	b3 07       	cpc	r27, r19
+ 41e:	e4 07       	cpc	r30, r20
+ 420:	f5 07       	cpc	r31, r21
+ 422:	20 f0       	brcs	.+8      	; 0x42c <__udivmodsi4_ep>
+ 424:	a2 1b       	sub	r26, r18
+ 426:	b3 0b       	sbc	r27, r19
+ 428:	e4 0b       	sbc	r30, r20
+ 42a:	f5 0b       	sbc	r31, r21
+
+0000042c <__udivmodsi4_ep>:
+ 42c:	66 1f       	adc	r22, r22
+ 42e:	77 1f       	adc	r23, r23
+ 430:	88 1f       	adc	r24, r24
+ 432:	99 1f       	adc	r25, r25
+ 434:	1a 94       	dec	r1
+ 436:	69 f7       	brne	.-38     	; 0x412 <__udivmodsi4_loop>
+ 438:	60 95       	com	r22
+ 43a:	70 95       	com	r23
+ 43c:	80 95       	com	r24
+ 43e:	90 95       	com	r25
+ 440:	9b 01       	movw	r18, r22
+ 442:	ac 01       	movw	r20, r24
+ 444:	bd 01       	movw	r22, r26
+ 446:	cf 01       	movw	r24, r30
+ 448:	08 95       	ret
+
+0000044a <__divmodsi4>:
+ 44a:	97 fb       	bst	r25, 7
+ 44c:	09 2e       	mov	r0, r25
+ 44e:	05 26       	eor	r0, r21
+ 450:	0e d0       	rcall	.+28     	; 0x46e <__divmodsi4_neg1>
+ 452:	57 fd       	sbrc	r21, 7
+ 454:	04 d0       	rcall	.+8      	; 0x45e <__divmodsi4_neg2>
+ 456:	d7 df       	rcall	.-82     	; 0x406 <__udivmodsi4>
+ 458:	0a d0       	rcall	.+20     	; 0x46e <__divmodsi4_neg1>
+ 45a:	00 1c       	adc	r0, r0
+ 45c:	38 f4       	brcc	.+14     	; 0x46c <__divmodsi4_exit>
+
+0000045e <__divmodsi4_neg2>:
+ 45e:	50 95       	com	r21
+ 460:	40 95       	com	r20
+ 462:	30 95       	com	r19
+ 464:	21 95       	neg	r18
+ 466:	3f 4f       	sbci	r19, 0xFF	; 255
+ 468:	4f 4f       	sbci	r20, 0xFF	; 255
+ 46a:	5f 4f       	sbci	r21, 0xFF	; 255
+
+0000046c <__divmodsi4_exit>:
+ 46c:	08 95       	ret
+
+0000046e <__divmodsi4_neg1>:
+ 46e:	f6 f7       	brtc	.-4      	; 0x46c <__divmodsi4_exit>
+ 470:	90 95       	com	r25
+ 472:	80 95       	com	r24
+ 474:	70 95       	com	r23
+ 476:	61 95       	neg	r22
+ 478:	7f 4f       	sbci	r23, 0xFF	; 255
+ 47a:	8f 4f       	sbci	r24, 0xFF	; 255
+ 47c:	9f 4f       	sbci	r25, 0xFF	; 255
+ 47e:	08 95       	ret
+
+00000480 <_exit>:
+ 480:	f8 94       	cli
+
+00000482 <__stop_program>:
+ 482:	ff cf       	rjmp	.-2      	; 0x482 <__stop_program>
